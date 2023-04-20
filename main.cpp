@@ -68,6 +68,7 @@ void print_ssem(void *msg, size_t size);
 void print_evcsn(void *msg, size_t size);
 void print_saem(void *msg, size_t size);
 void print_rtcmem(void *msg, size_t size);
+bool stringEquals(const char *__lhs, const char *__rhs);
 
 // main
 int main(int argc, char* argv[]) {
@@ -83,12 +84,20 @@ int main(int argc, char* argv[]) {
     zmq::message_t topic;
     zmq::message_t msg;
     std::string zmq_connect_string;
+    std::string zmq_local_connect_string;
 
     if(argc > 1) {
-        zmq_connect_string.append("tcp://");
-        zmq_connect_string.append(argv[1]);
-        zmq_connect_string.append(":");
-        zmq_connect_string.append(argv[2]);
+        if(stringEquals(argv[1], "local")) {
+            zmq_connect_string.append("tcp://");
+            zmq_connect_string.append(argv[2]);
+            zmq_connect_string.append(":");
+            zmq_connect_string.append(argv[3]);
+        } else {
+            zmq_connect_string.append("tcp://");
+            zmq_connect_string.append(argv[1]);
+            zmq_connect_string.append(":");
+            zmq_connect_string.append(argv[2]);
+        }
     } else {
         std::cout << "Usage: " << argv[0] << " ip port" << std::endl;
         return 0;
@@ -97,6 +106,14 @@ int main(int argc, char* argv[]) {
     // connect to ZMQ
     std::cout << "main(): " << "connect ZMQ (" << zmq_connect_string << ")" << std::endl;
     zmq_socket_in.connect(zmq_connect_string);
+
+    // bind port to ZMQ if local testing
+    if(stringEquals(argv[1], "local")) {
+        zmq_local_connect_string.append("tcp://*:");
+        zmq_local_connect_string.append(argv[3]);
+        zmq_socket_in.bind(zmq_local_connect_string);
+    }
+
     zmq_socket_in.set(zmq::sockopt::subscribe, "");
 
     std::cout << "main(): " << "main loop" << std::endl;
@@ -174,6 +191,10 @@ int main(int argc, char* argv[]) {
 
     std::cout << "done" << std::endl;
     return ret;
+}
+
+bool stringEquals(const char *__lhs, const char *__rhs) {
+    return strcmp(__lhs, __rhs) == 0;
 }
 
 // analysis functions
