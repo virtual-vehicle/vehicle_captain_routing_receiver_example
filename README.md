@@ -25,7 +25,7 @@ Message Examples
 - RTCMEM - partly parsed
 
 ## Copyright
-Please cite the [vehicleCAPTAIN paper](https://github.com/virtual-vehicle/vehicle_captain/blob/main/LITERATURE.md) if you used any part of this library for your work.
+Please cite the [vehicleCAPTAIN](https://github.com/virtual-vehicle/vehicle_captain/blob/main/LITERATURE.md) if you used any part of this library for your work.
 
 ## Contribution Guidelines
 Feel free to add fixes and new features!
